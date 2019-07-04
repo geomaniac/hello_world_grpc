@@ -1,6 +1,6 @@
-use hello_world_grpc::helloworld_grpc::*;
-use hello_world_grpc::helloworld::*;
 use grpc::ClientStubExt;
+use hello_world_grpc::helloworld::*;
+use hello_world_grpc::helloworld_grpc::*;
 
 use std::io;
 

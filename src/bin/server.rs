@@ -1,14 +1,22 @@
 use std::thread;
 
-use hello_world_grpc::helloworld_grpc::*;
 use hello_world_grpc::helloworld::*;
+use hello_world_grpc::helloworld_grpc::*;
 
 struct GreeterImpl;
 
 impl Greeter for GreeterImpl {
-    fn say_hello(&self, _m: grpc::RequestOptions, req: HelloRequest) -> grpc::SingleResponse<HelloReply> {
+    fn say_hello(
+        &self,
+        _m: grpc::RequestOptions,
+        req: HelloRequest,
+    ) -> grpc::SingleResponse<HelloReply> {
         let mut r = HelloReply::new();
-        let name = if req.get_name().is_empty() { "world" } else { req.get_name() };
+        let name = if req.get_name().is_empty() {
+            "world"
+        } else {
+            req.get_name()
+        };
         println!("greeting request from {}", name);
         r.set_message(format!("Hello {}", name));
         grpc::SingleResponse::completed(r)

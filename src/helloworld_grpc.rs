@@ -3,7 +3,7 @@
 
 // https://github.com/Manishearth/rust-clippy/issues/702
 #![allow(unknown_lints)]
-#![allow(clippy)]
+#![allow(clippy::all)]
 
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
@@ -28,12 +28,12 @@ pub trait Greeter {
 // client
 
 pub struct GreeterClient {
-    grpc_client: ::grpc::Client,
+    grpc_client: ::std::sync::Arc<::grpc::Client>,
     method_SayHello: ::std::sync::Arc<::grpc::rt::MethodDescriptor<super::helloworld::HelloRequest, super::helloworld::HelloReply>>,
 }
 
-impl GreeterClient {
-    pub fn with_client(grpc_client: ::grpc::Client) -> Self {
+impl ::grpc::ClientStub for GreeterClient {
+    fn with_client(grpc_client: ::std::sync::Arc<::grpc::Client>) -> Self {
         GreeterClient {
             grpc_client: grpc_client,
             method_SayHello: ::std::sync::Arc::new(::grpc::rt::MethodDescriptor {
@@ -43,17 +43,6 @@ impl GreeterClient {
                 resp_marshaller: Box::new(::grpc::protobuf::MarshallerProtobuf),
             }),
         }
-    }
-
-    pub fn new_plain(host: &str, port: u16, conf: ::grpc::ClientConf) -> ::grpc::Result<Self> {
-        ::grpc::Client::new_plain(host, port, conf).map(|c| {
-            GreeterClient::with_client(c)
-        })
-    }
-    pub fn new_tls<C : ::tls_api::TlsConnector>(host: &str, port: u16, conf: ::grpc::ClientConf) -> ::grpc::Result<Self> {
-        ::grpc::Client::new_tls::<C>(host, port, conf).map(|c| {
-            GreeterClient::with_client(c)
-        })
     }
 }
 

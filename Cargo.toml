@@ -2,13 +2,24 @@
 name = "hello_world_grpc"
 version = "0.1.0"
 authors = ["Daniel Buse <daniel.buse@giga-infosystems.com>"]
+edition = "2018"
 
 [dependencies]
+
+env_logger = "0.6"
 futures = "0.1"
 futures-cpupool = "0.1"
-grpc = "0.2"
-tls-api-native-tls = "0.1"
-tls-api = "0.1"
-native-tls = "0.1"
-httpbis = "0.4"
-protobuf = "1"
+grpc = "0.6"
+httpbis = "0.7"
+log = "0.4"
+protobuf = "2"
+tls-api = "0.2"
+tls-api-native-tls = "0.2"
+tokio-core = "0.1"
+
+[build-dependencies]
+protoc-rust-grpc = "0.6"
+
+[patch.crates-io]
+httpbis = {git = "https://github.com/GiGainfosystems/rust-http2", rev = "1d0fb83"}
+grpc = {git = "https://github.com/geomaniac/grpc-rust", rev = "7791133"}

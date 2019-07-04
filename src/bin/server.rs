@@ -1,7 +1,3 @@
-extern crate hello_world_grpc;
-extern crate grpc;
-extern crate futures;
-
 use std::thread;
 
 use hello_world_grpc::helloworld_grpc::*;
@@ -21,7 +17,7 @@ impl Greeter for GreeterImpl {
 
 fn main() {
     let mut server = grpc::ServerBuilder::new_plain();
-    server.http.set_port(50051);
+    server.http.set_addr("192.168.2.185:50099").unwrap();
     server.add_service(GreeterServer::new_service_def(GreeterImpl));
     server.http.set_cpu_pool_threads(4);
     let _server = server.build().expect("server");

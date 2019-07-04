@@ -1,20 +1,26 @@
-use grpc::ClientStubExt;
+use grpc::ClientStub;
 use hello_world_grpc::helloworld::*;
 use hello_world_grpc::helloworld_grpc::*;
-
-use std::io;
+use std::sync::Arc;
 
 fn main() {
-    loop {
-        let mut line = String::new();
-        io::stdin().read_line(&mut line).expect("correct input");
-        let client = GreeterClient::new_plain("192.168.2.185", 50099, Default::default()).unwrap();
+    env_logger::init();
+    let executor = tokio_core::reactor::Core::new().unwrap();
+    let client = GreeterClient::with_client(Arc::new(
+        grpc::Client::new_explicit_plain(
+            "127.0.0.1",
+            50123,
+            Default::default(),
+            // replace this line with `None` to make it work again.
+            Some(executor.remote()),
+        )
+        .unwrap(),
+    ));
 
-        let mut req = HelloRequest::new();
-        req.set_name(line);
+    let mut req = HelloRequest::new();
+    req.set_name("World!".to_string());
 
-        let resp = client.say_hello(grpc::RequestOptions::new(), req);
+    let resp = client.say_hello(grpc::RequestOptions::new(), req);
 
-        println!("{:?}", resp.wait());
-    }
+    println!("{:?}", resp.wait_drop_metadata().unwrap().message);
 }

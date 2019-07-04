@@ -17,15 +17,15 @@ impl Greeter for GreeterImpl {
         } else {
             req.get_name()
         };
-        println!("greeting request from {}", name);
         r.set_message(format!("Hello {}", name));
         grpc::SingleResponse::completed(r)
     }
 }
 
 fn main() {
+    env_logger::init();
     let mut server = grpc::ServerBuilder::new_plain();
-    server.http.set_addr("192.168.2.185:50099").unwrap();
+    server.http.set_addr("127.0.0.1:50123").unwrap();
     server.add_service(GreeterServer::new_service_def(GreeterImpl));
     server.http.set_cpu_pool_threads(4);
     let _server = server.build().expect("server");
